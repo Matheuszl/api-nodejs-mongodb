@@ -6,8 +6,9 @@ const app = express();
  * fomato json
  */
 app.use(express.json());
-app.use(express.urlencoded({ extended: true}))
+app.use(express.urlencoded({ extended: true}));
 
-
-
+//repasso o app
+require('./controllers/authController')(app);
+//controllers\authController.js
 app.listen(3000);
