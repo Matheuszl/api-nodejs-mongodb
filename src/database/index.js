@@ -6,4 +6,6 @@ mongoose.connect("mongodb://localhost/noderest", {
   useCreateIndex: true
 });
 
+//C:\Program Files\MongoDB\Server\4.4\bin
+
 module.exports = mongoose;
