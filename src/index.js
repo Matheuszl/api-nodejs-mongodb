@@ -9,7 +9,9 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true}));
 
 //repasso o app
-require('./controllers/authController')(app);
-require('./controllers/projectController')(app);
+//todos controlers que forem sendo criados
+//automaticamente sao chamados por causa do index.js na camada controllers
+require('./app/controllers/index')(app);
+
 //controllers\authController.js
 app.listen(3000);
