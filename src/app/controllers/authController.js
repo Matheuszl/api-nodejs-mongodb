@@ -65,7 +65,7 @@ router.post('/authenticate', async (req, res) => {
   });
 });
 
-
+//rota de pedir squeci senha
 router.post('/forgot_password', async (req, res) => {
   const { email } = req.body;
 
@@ -92,6 +92,7 @@ router.post('/forgot_password', async (req, res) => {
       }
     });
 
+    //envio do email de recuperação de senha
     mailer.sendMail({
       to: email,
       from: 'matheus.zzalamena@gmail.com',
@@ -110,6 +111,37 @@ router.post('/forgot_password', async (req, res) => {
   }
 });
 
+//rota de recuperação de senha
+router.post('/reset_password', async (req, res) => {
+  //primeramente eu pedo da req o email, token gerado pra nova senha e o password novo
+  const { email, token, password} = req.body;
 
+  try{
+    const user = await User.findOne({email}).select('+passwordResetToken passwordResetExpires');
+
+    if(!user)
+      return res.status(400).send({ error: 'User not found' });
+
+    if(token !== user.passwordResetToken)
+      return res.status(400).send({ error: 'Token invalid'});
+
+    const now = new Date();
+
+    if(now > user.passwordResetExpires)
+      return res.status(400).send({ error: 'Token expires'});
+
+    //apos as verificaçoes, se passar em todas ele salva a nova senha
+    user.password = password;
+
+    //salva o usuario com a novas enha
+    await user.save();
+
+    //res.send() retorna por padaro codigo 200 - OK
+    res.send();
+
+  }catch(err){
+    res.status(400).send({ error: 'Cannot reset password'});
+  }
+});
 
 module.exports = app => app.use('/auth', router);
