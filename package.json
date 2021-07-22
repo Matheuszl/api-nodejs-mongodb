@@ -8,6 +8,7 @@
     "mongoose": "^5.13.2",
     "nodemailer": "^6.6.3",
     "nodemailer-express-handlebars": "^4.0.0",
+    "nodemon": "^2.0.12",
     "path": "^0.12.7"
   }
 }
