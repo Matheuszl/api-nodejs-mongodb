@@ -101,7 +101,7 @@ router.post('/forgot_password', async (req, res) => {
 
     }, (err) => {
       if(err)
-        return res.status(400).send({error: 'cannot sand token forget password'});
+        return res.status(400).send({error: 'cannot send token forget password'});
 
       return res.send();
       });
