@@ -39,12 +39,23 @@ router.get('/:projectId', async (req, res) => {
 //rota de create de um novo projeto
 router.post('/', async (req, res) => {
   try {
+    const { title, description, tasks } = req.body;
     //usar o await pq isso é uma consulta ao mongoose e ele retorna uma promisse
     //o user: vai buscar qual usuario criou o projeto, quem preenche é o midware de auth
-    const project = await Project.create({...req.body, user: req.userId});
-    
+    const project = await Project.create({ title, description, user: req.userId });
+    //percorrer todas as tasks
 
+    //esse map precisa ser assincrono pois precisa esperar a resposta para depois salvar no projeto
+    //esse Promisse.all garante que a funçao execute é só salve depois do retorno dela
+    await Promise.all(tasks.map( async task => {
+      const projectTask = new Task({ ...task, project: project._id});
 
+      await projectTask.save();
+        
+      project.tasks.push(projectTask);
+    }));  
+
+    await project.save();
     //retorna o projeto
     return res.send({ project });
 
