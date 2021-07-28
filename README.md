@@ -9,7 +9,8 @@ Desenvolvimento de API REST em Node.js e banco de dados em nuvem com a tecnologi
 - [:heavy_check_mark:] Modulo de cadastro
 - [:heavy_check_mark:] Modulo de autenticação
 - [:heavy_check_mark:] Modulo de Projetos
-- [:warning:] Modulo de Envio de e-mails 
+- [:heavy_check_mark:] Modulo de Envio de e-mails 
+- [:warning:] Relatorio em PDF
 - [:warning:] Em desenvolvimento de novas funcionalidades
 
 
