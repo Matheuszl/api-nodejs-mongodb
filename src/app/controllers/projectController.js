@@ -13,7 +13,7 @@ router.use(authMiddleware)
 router.get('/', async (req, res) => {
   try {
     //apenas esse metodo find() ja retorna todos os projetos no bd
-    const projects = await Project.find().populate('user');
+    const projects = await Project.find().populate(['user', 'tasks']);
 
     return res.send({ projects });
 
@@ -26,7 +26,7 @@ router.get('/', async (req, res) => {
 router.get('/:projectId', async (req, res) => {
   
   try {
-    const project = await Project.findById(req.params.projectId).populate('user');
+    const project = await Project.findById(req.params.projectId).populate(['user', 'tasks']);
 
     return res.send({ project });
 
@@ -67,7 +67,37 @@ router.post('/', async (req, res) => {
 
 //rota de atualizaçao
 router.put('/:projectId', async (req, res) => {
+  try {
+    const { title, description, tasks } = req.body;
+    //usar o await pq isso é uma consulta ao mongoose e ele retorna uma promisse
+    //o user: vai buscar qual usuario criou o projeto, quem preenche é o midware de auth
+    const project = await Project.findByIdAndUpdate(req.params.projectId, {
+      title,
+      descprition 
+    }, {new: true});
+    //percorrer todas as tasks
 
+    project.tasks = [];
+    await Task.remove({ project: project._id });
+
+    //esse map precisa ser assincrono pois precisa esperar a resposta para depois salvar no projeto
+    //esse Promisse.all garante que a funçao execute é só salve depois do retorno dela
+    await Promise.all(tasks.map( async task => {
+      const projectTask = new Task({ ...task, project: project._id});
+
+      await projectTask.save();
+        
+      project.tasks.push(projectTask);
+    }));  
+
+    await project.save();
+    //retorna o projeto
+    return res.send({ project });
+
+
+  } catch (error) {
+    return res.status(400).send({ error: 'error updating project'});
+  }
 });
 
 //rota de delete
