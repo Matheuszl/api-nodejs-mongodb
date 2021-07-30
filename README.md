@@ -1,6 +1,6 @@
 ## 💻 Sobre o projeto
 
-Desenvolvimento de API REST em Node.js e banco de dados em nuvem com a tecnologia do MongoDB
+Desenvolvimento de uma API REST em Node.js e banco de dados em nuvem com a tecnologia do MongoDB Atlas, a API tambem conta com um modulo de geração de relatorios em PDF diretamente da consulta com o banco de dados.
 
 
 ---
@@ -9,8 +9,9 @@ Desenvolvimento de API REST em Node.js e banco de dados em nuvem com a tecnologi
 - [:heavy_check_mark:] Modulo de cadastro
 - [:heavy_check_mark:] Modulo de autenticação
 - [:heavy_check_mark:] Modulo de Projetos
-- [:heavy_check_mark:] Modulo de Envio de e-mails 
-- [:warning:] Relatorio em PDF
+- [:heavy_check_mark:] Modulo de Recuperação de senha
+- [:heavy_check_mark:] Modulo de Envio de email
+- [:heavy_check_mark:] Modulo de emissão de relatorio em PDF
 - [:warning:] Em desenvolvimento de novas funcionalidades
 
 
@@ -27,10 +28,17 @@ Este projeto ainda esta em desenvolvimento, ao lançamento da versão estavel, a
 
 As seguintes ferramentas foram usadas na construção do projeto:
 
--   **[Express](https://expressjs.com/)**
+Linguagem:
 -   **[NodeJS](https://nodejs.org/en/)**
+
+Banco de dados:
 -   **[MongoDB](https://www.mongodb.com/pt-br)**
+
+Ferramentas:
+-   **[Express](https://expressjs.com/)**
 -   **[NPM](https://www.npmjs.com)**
+-   **[PdfMake](http://pdfmake.org/#/)**
+-   **[NodemMile](https://nodemailer.com/about/)**
 
 
 ---
