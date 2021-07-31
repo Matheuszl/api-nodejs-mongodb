@@ -1,10 +1,78 @@
 const express = require('express');
 const PDFPrinter = require('pdfmake');
 const Project = require('../models/project')
+const User = require('../models/User');
 const fs = require('fs');
 
 //usa nas rotas
 const router = express.Router();
+
+var generateNewPdf = function (print, doc, response) {
+  //pega o conteudo do arquivo e passa para outro lugar
+  //pdfDoc.pipe(fs.createWriteStream("Relatorio.pdf"));
+
+  //esse trecho de codigo abaixo é complexo mas basicamente ele gera o pdf 
+  //no navegadr cortando seus pedaçoes e dpeois montando o nomamente
+  const pdfDoc = print.createPdfKitDocument(doc);
+  const chunks = [];
+  //quando o pdfDoc tiver finalizado, faço o seguinte
+  pdfDoc.on("data", (chunk) => {
+    chunks.push(chunk);
+  });
+  pdfDoc.end();
+
+  //quando o pdfDoc tiver finalizado, faço o seguinte
+  pdfDoc.on("end", () => {
+    const result = Buffer.concat(chunks);
+    response.end(result);
+  });
+
+}
+
+router.get('/usuarios', async (req, res) => {
+  try {
+    const users = await User.find();
+    const fonts = {
+      Helvetica: {
+        normal: 'Helvetica',
+        bold: 'Helvetica-Bold',
+        italics: 'Helvetica-Oblique',
+        bolditalics: 'Helvetica-BoldOblique'
+      },
+    };
+
+    const printer = new PDFPrinter(fonts);
+    const body = [];
+
+    for await (let user of users) {
+      const rows = new Array();
+      rows.push(user.name);
+      rows.push(user.email);
+      body.push(rows);
+    }
+
+    const docDefinition = {
+      defaultStyle: {
+        font: 'Helvetica' //muito importante, se tirar isso o coigo da pau
+      },
+      content: [
+        { text: 'Usuarios', style: 'header' },
+        'Relatorio usuarios cadastrados no sistema',
+        {
+          table: {
+            body: [
+              ['Nome', 'E-mail'], ...body],
+          },
+        },
+      ],
+    };
+
+    generateNewPdf(printer, docDefinition, res);
+
+  } catch (err) {
+    return res.status(400).send({ error: 'error create PDF for users' });
+  }
+});
 
 
 router.get('/projetos', async (req, res) => {
@@ -33,7 +101,7 @@ router.get('/projetos', async (req, res) => {
       rows.push(project.user.name);
       //rows.push(project.user.email);
       rows.push(project.createdAt);
-  
+
       body.push(rows);
     }
 
@@ -47,34 +115,19 @@ router.get('/projetos', async (req, res) => {
         {
           table: {
             body: [
-              ['ID','Titulo', 'Descrição', 'Usuario', 'Data emissão'], ...body],
+              ['ID', 'Titulo', 'Descrição', 'Usuario', 'Data emissão'], ...body],
           },
         },
       ],
     };
 
-    const pdfDoc = printer.createPdfKitDocument(docDefinition);
-
-    //pega o conteudo do arquivo e passa para outro lugar
-    //pdfDoc.pipe(fs.createWriteStream("Relatorio.pdf"));
-
-    //esse trecho de codigo abaixo é complexo mas basicamente ele gera o pdf 
-    //no navegadr cortando seus pedaçoes e dpeois montando o nomamente
-    const chunks = [];
-    pdfDoc.on("data", (chunk) => {
-      chunks.push(chunk);
-    });
-    pdfDoc.end();
-    //quando o pdfDoc tiver finalizado, faço o seguinte
-    pdfDoc.on("end", () => {
-      const result = Buffer.concat(chunks);
-      res.end(result);
-    });
-
+    generateNewPdf(printer, docDefinition, res);
 
   } catch (err) {
     return res.status(400).send({ error: 'error create PDF for projects' });
   }
 });
+
+
 
 module.exports = app => app.use('/relatorio', router);
