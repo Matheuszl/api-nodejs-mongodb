@@ -7,7 +7,7 @@ const Task = require('../models/task')
 const router = express.Router();
 
 //só acessa esse controle com o token de auth jwt
-router.use(authMiddleware)
+router.use(authMiddleware);
 
 //rota que retorna todos projetos
 router.get('/', async (req, res) => {
