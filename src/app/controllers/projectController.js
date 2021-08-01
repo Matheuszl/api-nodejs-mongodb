@@ -13,6 +13,7 @@ router.use(authMiddleware);
 router.get('/', async (req, res) => {
   try {
     //apenas esse metodo find() ja retorna todos os projetos no bd
+    //.populate() busca no banco os objetos que estao dento do objeto Projetct
     const projects = await Project.find().populate(['user', 'tasks']);
 
     return res.send({ projects });
@@ -73,7 +74,7 @@ router.put('/:projectId', async (req, res) => {
     //o user: vai buscar qual usuario criou o projeto, quem preenche é o midware de auth
     const project = await Project.findByIdAndUpdate(req.params.projectId, {
       title,
-      descprition 
+      description 
     }, {new: true});
     //percorrer todas as tasks
 

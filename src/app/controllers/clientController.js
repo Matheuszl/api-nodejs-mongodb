@@ -23,6 +23,18 @@ router.get('/', async (req, res) => {
   }
 });
 
+router.get('/:clientId', async (req, res) => {
+  try {
+
+    const client = await Client.findById(req.params.clientId);
+
+    return res.send({ client });
+
+  }catch(err){
+    return res.status(400).send({ error: 'error loading client' });
+  }
+});
+
 //caminha para criação de um novo cliente
 router.post('/', async (req, res) => {
   try {
@@ -40,5 +52,21 @@ router.post('/', async (req, res) => {
     return res.status(400).send({ error: 'error crating new client'});
   }
 });
+
+//procura por id e remove
+router.delete('/:clientId', async (req, res) => {
+  try{
+    
+    await Client.findByIdAndRemove(req.params.clientId);
+
+    //retorno apenas o send pq ja excluiu, 200=ok
+    return res.send();
+
+  }catch(err){
+    return res.status(400).send({ error: 'error deleting client' });
+  }
+});
+
+
 
 module.exports = app => app.use('/clients', router);
