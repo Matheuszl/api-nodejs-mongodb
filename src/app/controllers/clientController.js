@@ -23,4 +23,22 @@ router.get('/', async (req, res) => {
   }
 });
 
+//caminha para criação de um novo cliente
+router.post('/', async (req, res) => {
+  try {
+    //cria as variasveis que capturam do corpo da req a informação a ser armazenada
+    const { name, email, number, adress } = req.body;
+    //cria a instancia client no bd passado as informaçoes 
+    const client = await Client.create({ name, email, number, adress});
+
+    //salva o novo cliente
+    await client.save();
+    //retorna o cliente
+    return res.send({ client });
+
+  }catch(err){
+    return res.status(400).send({ error: 'error crating new client'});
+  }
+});
+
 module.exports = app => app.use('/clients', router);
