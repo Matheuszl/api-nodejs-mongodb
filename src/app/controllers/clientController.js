@@ -67,6 +67,28 @@ router.delete('/:clientId', async (req, res) => {
   }
 });
 
+//atualizar um cliente
+router.put('/:clientId', async (req, res) => {
+  try {
+    const {name , email, number, adress} = req.body;
+
+    const client = await Client.findByIdAndUpdate(req.params.clientId, {
+      name,
+      email,
+      number,
+      adress
+    }, {new: true});
+
+
+    await client.save();
+
+    return res.send({ client });
+
+  }catch(err){
+    return res.status(400).send({ error: 'error updating client'});
+  }
+})
+
 
 
 module.exports = app => app.use('/clients', router);

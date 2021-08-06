@@ -96,7 +96,7 @@ router.put('/:projectId', async (req, res) => {
     return res.send({ project });
 
 
-  } catch (error) {
+  } catch (err) {
     return res.status(400).send({ error: 'error updating project'});
   }
 });
